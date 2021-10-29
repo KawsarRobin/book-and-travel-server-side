@@ -4,6 +4,7 @@ const app = express();
 const cors = require('cors');
 require('dotenv').config();
 const port = process.env.PORT || 5000;
+const ObjectId = require('mongodb').ObjectId;
 
 // Middle-Wire
 app.use(cors());
@@ -18,18 +19,30 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     await client.connect();
-    const Servicecollection = client.db('BookAndTravel').collection('services');
-    const Ordercollection = client.db('BookAndTravel').collection('orders');
+    const serviceCollection = client.db('BookAndTravel').collection('services');
+    const orderCollection = client.db('BookAndTravel').collection('orders');
 
+    // Find Single Product
+    app.get('/services/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await serviceCollection.findOne(query);
+      res.json(result);
+      console.log(result);
+    });
+
+    //Find All Services
+    app.get('/services', async (req, res) => {
+      const cursor = serviceCollection.find({});
+      const result = await cursor.toArray();
+      res.json(result);
+    });
+
+    //ADD A new Service
     app.post('/addService', async (req, res) => {
       const newService = req.body;
-
-      const result = await Servicecollection.insertOne(newService);
-      console.log(result);
+      const result = await serviceCollection.insertOne(newService);
       res.json(result);
-
-      //     const result = await haiku.insertOne(doc);
-      // console.log(`A document was inserted with the _id: ${result.insertedId}`);
     });
   } finally {
     //   await client.close()
