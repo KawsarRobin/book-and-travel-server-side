@@ -28,7 +28,6 @@ async function run() {
       const query = { _id: ObjectId(id) };
       const result = await serviceCollection.findOne(query);
       res.json(result);
-      console.log(result);
     });
 
     //Find All Services
@@ -43,6 +42,37 @@ async function run() {
       const newService = req.body;
       const result = await serviceCollection.insertOne(newService);
       res.json(result);
+    });
+
+    //ADD  A Service
+    app.post('/addService', async (req, res) => {
+      const newService = req.body;
+      const result = await serviceCollection.insertOne(newService);
+      res.json(result);
+    });
+
+    // Add An Order
+    app.post('/addOrder', async (req, res) => {
+      const newOrder = req.body;
+      const result = await orderCollection.insertOne(newOrder);
+      res.json(result);
+    });
+
+    //Find all orders
+    app.get('/allOrders', async (req, res) => {
+      const cursor = orderCollection.find({});
+      const result = await cursor.toArray();
+      res.json(result);
+    });
+
+    //Find My Orders by email
+    app.post('/myOrders/:email', async (req, res) => {
+      const email = req.params.email;
+      const cursor = orderCollection.find({});
+      const result = await cursor.toArray();
+      const myBookings = result.filter((booking) => booking.email === email);
+      console.log(myBookings);
+      res.json(myBookings);
     });
   } finally {
     //   await client.close()
