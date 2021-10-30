@@ -74,6 +74,31 @@ async function run() {
       res.json(myBookings);
     });
 
+    app.put('/upadateOrders/:id', async (req, res) => {
+      const id = req.params.id;
+      const updatedStatus = req.body;
+      const filter = { _id: ObjectId(id) };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: {
+          status: updatedStatus.status,
+        },
+      };
+      const result = await orderCollection.updateOne(
+        filter,
+        updateDoc,
+        options
+      );
+      console.log(
+        `${result.matchedCount} document(s) matched the filter, updated ${result.modifiedCount} document(s)`
+      );
+      res.json(result);
+
+      // console.log('this is idd', id);
+      // console.log('this is status', updatedStatus.status);
+      // console.log('hitting database');
+    });
+
     //Delete My Booking
     app.delete('/deleteMyOrder/:id', async (req, res) => {
       const id = req.params.id;
