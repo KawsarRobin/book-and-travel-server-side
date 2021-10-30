@@ -71,8 +71,16 @@ async function run() {
       const cursor = orderCollection.find({});
       const result = await cursor.toArray();
       const myBookings = result.filter((booking) => booking.email === email);
-      console.log(myBookings);
       res.json(myBookings);
+    });
+
+    //Delete My Booking
+    app.delete('/deleteMyOrder/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await orderCollection.deleteOne(query);
+      console.log(result);
+      res.json(result);
     });
   } finally {
     //   await client.close()
