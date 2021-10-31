@@ -74,6 +74,7 @@ async function run() {
       res.json(myBookings);
     });
 
+    //Update pending status
     app.put('/upadateOrders/:id', async (req, res) => {
       const id = req.params.id;
       const updatedStatus = req.body;
@@ -93,10 +94,6 @@ async function run() {
         `${result.matchedCount} document(s) matched the filter, updated ${result.modifiedCount} document(s)`
       );
       res.json(result);
-
-      // console.log('this is idd', id);
-      // console.log('this is status', updatedStatus.status);
-      // console.log('hitting database');
     });
 
     //Delete My Booking
